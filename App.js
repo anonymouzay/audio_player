@@ -13,7 +13,7 @@ export default function App() {
   const [isPlaying,SetIsPlaying] = useState(false);
   const [isLooping,SetIsLooping] = useState(false);
   const [sound1,setSound1] = useState( null);
-  const [pageNumber,setPageNumber] = useState(1);
+  const [pageNumber,setPageNumber] = useState(0);
   const [addSubstract,setAddSubstract] = useState(0);
 
   //loading audio at the start
@@ -107,10 +107,17 @@ export default function App() {
     }
   }
 
+  const data=[
+    {text:"Hello. This is a audio player",uri:"https://image.flaticon.com/icons/svg/565/565814.svg"},
+    {text:"To go to the player itself press the 2nd button",uri:"https://image.flaticon.com/icons/svg/565/565815.svg"},
+    {text:"You can go backwards and forward using the rewind button",uri:"https://image.flaticon.com/icons/svg/565/565816.svg"},
+    {text:"You can loop the audio using the loop button",uri:"https://image.flaticon.com/icons/svg/565/565817.svg"},
+  ]
+
   const SwitchStatement = ( ) => {
     switch(pageNumber){
       case 0:
-        return <BodyHome></BodyHome> ;
+        return <BodyHome data={data}></BodyHome> ;
       case 1:
         return <BodyMusic isPlaying={isPlaying} SetIsPlaying={SetIsPlaying} isLooping={isLooping} SetIsLooping={SetIsLooping} addSubstract={addSubstract} setAddSubstract={setAddSubstract} ></BodyMusic>;
       case 2:
