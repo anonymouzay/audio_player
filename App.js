@@ -2,41 +2,69 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View,Image} from 'react-native';
 import {Audio} from 'expo-av';
 import {LinearGradient} from 'expo-linear-gradient';
+import { Asset } from 'expo-asset';
 
 import Foot from "./Foot";
 import BodyMusic from "./BodyMusic";
 import Head from './Head';
 import BodyHome from './BodyHome';
+import BodyFeed from './BodyFeed';
 
 export default function App() {
   // UseState
+  const [musicSrc,setMusicSrc] = useState("4");
+  const [musicImg,setMusicImg] = useState('');
+  const [songName,setSongName] = useState('');
+  const [autherName,setAutherName] = useState('');
+  const [sound1,setSound1] = useState( null);
   const [isPlaying,SetIsPlaying] = useState(false);
   const [isLooping,SetIsLooping] = useState(false);
-  const [sound1,setSound1] = useState( null);
   const [pageNumber,setPageNumber] = useState(0);
   const [addSubstract,setAddSubstract] = useState(0);
 
+  const GetTheData = async () =>{
+    try{
+      let response = await fetch("https://deezerdevs-deezer.p.rapidapi.com/track/%7Bid%7D",
+      {
+        method: 'GET',
+        headers: {
+          "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
+          "x-rapidapi-key": "13e7b5ce94msh29a76cfdb721646p15c7acjsnc2fa2194e226"
+        }});
+      let resJSON = await response.json();
+      console.log(resJSON);
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+  
   //loading audio at the start
   useEffect(() => {
     const  LoadAsync = async () => {
       try{
-        const {sound} = await Audio.Sound.create(
-          require("./assets/Frank_Bang.mp3"),
-          {
-            shouldPlay: false,
-          }
-        );
-        setSound1(sound);
-        console.log("completed")
+        // await Audio.setAudioModeAsync({staysActiveInBackground:true});
+        await Audio.setIsEnabledAsync(true);
+        if(!sound1){
+          const {sound} = await Audio.Sound.createAsync(require('./assets/Frank_Bang.mp3'), initialStatus = { shouldPlay: false }, onPlaybackStatusUpdate = null, downloadFirst = true)
+          setSound1(sound);
+          //GetTheData();
+          console.log("completed")
+        }else{
+          const uri1 = './assets/'+musicSrc;
+          await sound1.unloadAsync();
+          await sound1.loadAsync(require('./assets/Frank_Bang.mp3'), initialStatus = { shouldPlay: true }, onPlaybackStatusUpdate = null, downloadFirst = true);
+          SetIsPlaying(true);
+          console.log("changed");
+        }
       }
       catch(err){
         console.log(err);
       }
     }
-    Audio.setAudioModeAsync({staysActiveInBackground:true,playsInSilentModeIOS:true});
     LoadAsync();
 
-  },[]);
+  },[musicSrc]);
   //playing and pausing the sound
   useEffect(() => {
     const PlayableAsync = async () =>{
@@ -107,7 +135,7 @@ export default function App() {
     }
   }
 
-  const data=[
+  const data1=[
     {text:"Hello. This is a audio player",uri:"https://image.flaticon.com/icons/svg/565/565814.svg"},
     {text:"To go to the player itself press the 2nd button",uri:"https://image.flaticon.com/icons/svg/565/565815.svg"},
     {text:"You can go backwards and forward using the rewind button",uri:"https://image.flaticon.com/icons/svg/565/565816.svg"},
@@ -117,11 +145,11 @@ export default function App() {
   const SwitchStatement = ( ) => {
     switch(pageNumber){
       case 0:
-        return <BodyHome data={data}></BodyHome> ;
+        return <BodyHome data={data1}></BodyHome> ;
       case 1:
         return <BodyMusic isPlaying={isPlaying} SetIsPlaying={SetIsPlaying} isLooping={isLooping} SetIsLooping={SetIsLooping} addSubstract={addSubstract} setAddSubstract={setAddSubstract} ></BodyMusic>;
       case 2:
-        return;
+        return <BodyFeed></BodyFeed> ;
       default:
         return;
   }
