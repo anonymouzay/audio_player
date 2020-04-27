@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import 'react-native-gesture-handler';
 import { StyleSheet, Text, View,Image} from 'react-native';
 import {Audio} from 'expo-av';
 import {LinearGradient} from 'expo-linear-gradient';
 import { Asset } from 'expo-asset';
+import { NavigationContainer } from '@react-navigation/native';
 
 import Foot from "./Foot";
 import BodyMusic from "./BodyMusic";
@@ -156,14 +158,16 @@ export default function App() {
   }
 
   return (
-    <LinearGradient colors={["#09203f","#537895"]} style={styles.mainContainer} >
-      {/* Head */}
-      <Head></Head>
-      {/* Main */}
-      {SwitchStatement()}
-      {/* Foot */}
-      <Foot setPageNumber={setPageNumber}></Foot>
-    </LinearGradient>
+    <NavigationContainer>
+      <LinearGradient colors={["#09203f","#537895"]} style={styles.mainContainer} >
+        {/* Head */}
+        <Head></Head>
+        {/* Main */}
+        {SwitchStatement()}
+        {/* Foot */}
+        <Foot setPageNumber={setPageNumber}></Foot>
+      </LinearGradient>
+    </NavigationContainer>
   );
 }
 
